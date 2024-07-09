@@ -18,6 +18,14 @@ resource "azurerm_subnet" "inbound_endpoint_subnet" {
   resource_group_name  = azurerm_resource_group.dns_rg.name
   virtual_network_name = azurerm_virtual_network.hub_extension_vnet.name
   address_prefixes     = [var.address_prefix]
+
+  delegation {
+    name = "Microsoft.Network.dnsResolvers"
+    service_delegation {
+      actions = ["Microsoft.Network/virtualNetworks/subnets/join/action"]
+      name    = "Microsoft.Network/dnsResolvers"
+    }
+  }
 }
 
 resource "azurerm_private_dns_resolver" "private_dns_resolver" {
@@ -25,6 +33,16 @@ resource "azurerm_private_dns_resolver" "private_dns_resolver" {
   resource_group_name = azurerm_resource_group.dns_rg.name
   location            = azurerm_resource_group.dns_rg.location
   virtual_network_id  = azurerm_virtual_network.hub_extension_vnet.id
+}
+
+resource "azurerm_private_dns_resolver_inbound_endpoint" "example" {
+  name                    = "${var.resource_group_location}-pdri"
+  private_dns_resolver_id = azurerm_private_dns_resolver.private_dns_resolver.id
+  location                = azurerm_private_dns_resolver.private_dns_resolver.location
+  ip_configurations {
+    private_ip_allocation_method = "Dynamic"
+    subnet_id                    = azurerm_subnet.inbound_endpoint_subnet.id
+  }
 }
 
 #Private DNS Zones

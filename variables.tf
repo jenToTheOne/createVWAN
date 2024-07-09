@@ -19,7 +19,7 @@ variable "dns-vnets" {
 }
 
 variable "dns-subnets" {
-  default = [ "10.100.1.0/24","10.200.1.0/24" ]
+  default = [ "10.100.0.0/24","10.200.0.0/24" ]
 }
 
 variable "resource_group_name_prefix" {

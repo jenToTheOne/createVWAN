@@ -177,8 +177,8 @@ locals {
   dns_all = {for idx, dns_location in var.dns-locations: 
             dns_location => {
               resource_group_location = dns_location
-              address_prefix  = var.dns-vnets[idx]
-              address_space  = var.dns-subnets[idx]
+              address_space  = var.dns-vnets[idx]
+              address_prefix  = var.dns-subnets[idx]
             }
            }
 }
